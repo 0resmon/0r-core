@@ -75,3 +75,27 @@ R.GetIdentifier = function(source)
     return R.PrimaryIdentifier(source)
   end
 end
+ 
+
+R.RegisterServerCallback = function(name, cb)
+	R.ServerCallbacks[name] = cb
+end
+
+R.TriggerServerCallback = function(name, requestId, source, cb, ...)
+	if R.ServerCallbacks[name] then
+		R.ServerCallbacks[name](source, cb, ...)
+	else
+		print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
+	end
+end
+
+RegisterServerEvent('0r-core:triggerServerCallback')
+AddEventHandler('0r-core:triggerServerCallback', function(name, requestId, ...)
+	local playerId = source
+
+	R.TriggerServerCallback(name, requestId, playerId, function(...)
+		TriggerClientEvent('0r-core:serverCallback', playerId, requestId, ...)
+	end, ...)
+end)
+
+
