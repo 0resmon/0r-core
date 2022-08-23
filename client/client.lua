@@ -15,6 +15,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 	if (GetCurrentResourceName() ~= resourceName) then
 	  return
 	end
+
 	TriggerServerEvent('0r-core:onPlayerJoined')
 end)
 
