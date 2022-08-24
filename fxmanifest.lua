@@ -3,6 +3,8 @@ game 'gta5'
 author '0RESMON'
 discord 'https://discord.gg/0resmon'
 
+ui_page "web/index.html"
+
 client_scripts { 'config.lua', 'client/client.lua', 'shared.lua' }
 
 server_scripts {  
@@ -14,4 +16,9 @@ server_scripts {
     'shared.lua'
 }
 
-version "1.1"
+files {
+    'web/index.html',
+    'web/**/*',
+}
+
+version "1.0.2"

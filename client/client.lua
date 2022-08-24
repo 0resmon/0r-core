@@ -15,7 +15,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 	if (GetCurrentResourceName() ~= resourceName) then
 	  return
 	end
-
 	TriggerServerEvent('0r-core:onPlayerJoined')
 end)
 
@@ -53,3 +52,15 @@ R.TriggerServerCallback = function(name, cb, ...)
 		R.CurrentRequestId = 0
 	end
 end
+
+R.NotifPos = function(pos) 
+	SendNUIMessage({ action = "showNotify", data = { type = "setDefaultPos", pos = pos }  })
+end
+
+
+R.Notif = function(data)
+	SendNUIMessage({ action = "showNotify", data = data })
+end 
+ 
+RegisterNetEvent("0r-core:notif")
+AddEventHandler("0r-core:notif", R.Notif)

@@ -71,6 +71,8 @@ R.xPlayer = function(source)
   end
   
   xPlayer = R.RemapPlayer(xPlayer)
+
+  xPlayer.Notif("emoji", "React moruk aynen")
  
   return xPlayer
 end
@@ -127,6 +129,10 @@ R.RemapPlayer = function(xPlayer)
       else 
 
       end  
+   end
+
+   self.Notif = function(type, text, icon)
+      TriggerClientEvent("0r-core:notif", xPlayer.source, { type = type or "success", text = text, icon = icon or "💬" })
    end
  
    return R.MergeTable(self, xPlayer)
