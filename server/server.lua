@@ -3,7 +3,6 @@ AddEventHandler('0r-core:onPlayerJoined', function()
     local source = source
 
     if not R.Players[source] then 
-       
        info = {}
        identifier = R.GetIdentifier(source)
        query = "SELECT * FROM `users` WHERE identifier = '"..identifier.."' "
@@ -62,19 +61,18 @@ R.PrimaryIdentifier = function(source)
 end
 
 R.xPlayer = function(source)
-  local xPlayer
-
-  if Config.Framework == "ESX" then 
-    xPlayer = ESX.GetPlayerFromId(source)
-  elseif Config.Framework == "QBCore" then 
-    xPlayer = QBCore.Functions.GetPlayers(source)
-  end
   
-  xPlayer = R.RemapPlayer(xPlayer)
-
-  xPlayer.Notif("emoji", "React moruk aynen")
+  local source = source
  
-  return xPlayer
+  if Config.Framework == "ESX" then 
+	rPlayer = ESX.GetPlayerFromId(source)
+  elseif Config.Framework == "QBCore" then 
+	rPlayer = QBCore.Functions.GetPlayers(source)
+  end
+ 
+  rPlayer = R.RemapPlayer(rPlayer)
+  
+  return rPlayer
 end
 
 R.GetIdentifier = function(source)
@@ -141,7 +139,7 @@ end
 R.MergeTable = function(t1, t2)
   for k, v in pairs(t2) do
       if (type(v) == "table") and (type(t1[k] or false) == "table") then
-          merge(t1[k], t2[k])
+          R.MergeTable(t1[k], t2[k])
       else
           t1[k] = v
       end
