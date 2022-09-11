@@ -1,3 +1,4 @@
+
 RegisterNetEvent("0r-core:onPlayerJoined")
 AddEventHandler('0r-core:onPlayerJoined', function()
     local source = source
@@ -9,7 +10,8 @@ AddEventHandler('0r-core:onPlayerJoined', function()
        if Config.Framework == "QBCore" then 
           query = ""
        end
-       local data = R.ExecuteSql(query)
+       local data = {}
+       if Config.Framework == "ESX" then data = R.ExecuteSql(query) end
        if #data ~= 0 then 
           info = R.xPlayer(source)
           if Config.Framework == "ESX" then 
@@ -65,9 +67,9 @@ R.xPlayer = function(source)
   local source = source
  
   if Config.Framework == "ESX" then 
-	rPlayer = ESX.GetPlayerFromId(source)
+	   rPlayer = ESX.GetPlayerFromId(source)
   elseif Config.Framework == "QBCore" then 
-	rPlayer = QBCore.Functions.GetPlayers(source)
+	   rPlayer = QBCore.Functions.GetPlayer(source)
   end
  
   rPlayer = R.RemapPlayer(rPlayer)
@@ -79,7 +81,7 @@ R.GetIdentifier = function(source)
   if Config.Framework == "ESX" then 
     return ESX.GetPlayerFromId(source).identifier
   elseif Config.Framework == "QBCore" then 
-    return QBCore.GetPlayerFromId(source).PlayerData.citizenid
+    return QBCore.Functions.GetPlayer(source).PlayerData.citizenid
   else 
     return R.PrimaryIdentifier(source)
   end
@@ -93,7 +95,7 @@ R.RemapPlayer = function(xPlayer)
       if Config.Framework == "ESX" then 
          return xPlayer.getAccount(account)
       else 
-
+         return xPlayer.PlayerData.money[account]
       end
    end
 
@@ -101,7 +103,7 @@ R.RemapPlayer = function(xPlayer)
       if Config.Framework == "ESX" then 
          xPlayer.addAccountMoney(account, money)
       else 
-
+         xPlayer.Functions.AddMoney(account, money)
       end
    end
 
@@ -109,7 +111,7 @@ R.RemapPlayer = function(xPlayer)
       if Config.Framework == "ESX" then 
           return xPlayer.getJob()
       else 
-
+         return xPlayer.PlayerData.job
       end
    end
 
@@ -117,7 +119,7 @@ R.RemapPlayer = function(xPlayer)
       if Config.Framework == "ESX" then 
           xPlayer.setJob(name, grade)
       else 
-
+         xPlayer.Functions.SetJob(name, grade)
       end
    end
 
@@ -125,12 +127,16 @@ R.RemapPlayer = function(xPlayer)
       if Config.Framework == "ESX" then 
           return xPlayer.getInventoryItem(item)
       else 
-
+         return xPlayer.Functions.GetItemByName()
       end  
    end
 
    self.Notif = function(type, text, icon)
-      TriggerClientEvent("0r-core:notif", xPlayer.source, { type = type or "success", text = text, icon = icon or "💬" })
+      if Config.Framework == "ESX" then
+         TriggerClientEvent("0r-core:notif", xPlayer.source, { type = type or "success", text = text, icon = icon or "💬" })
+      else
+         TriggerClientEvent("0r-core:notif", xPlayer.PlayerData.source, { type = type or "success", text = text, icon = icon or "💬" })
+      end
    end
  
    return R.MergeTable(self, xPlayer)

@@ -14,7 +14,7 @@ if Config.Framework == "ESX" then
    ESX = nil
    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 elseif Config.Framework == "QBCore" then 
-   
+   QBCore = exports['qb-core']:GetCoreObject()
 end
 
 R.ExecuteSql = function(query)
