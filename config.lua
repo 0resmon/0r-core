@@ -4,9 +4,9 @@ Config.Multichar = false
 
 Config.Mysql = "oxmysql"
 
-Config.PrimaryIdentifier = "steam"
+Config.PrimaryIdentifier = "license"
 
-Config.Framework = "ESX"
+Config.Framework = "QBCore"
 
 Config.Version = {
     DB = "https://raw.githubusercontent.com/0resmon/0r-core/main/versions.json",
@@ -24,9 +24,6 @@ Config.events = {
         ["QBCore"] = "QBCore:Client:OnJobUpdate",
     },  
 }
-
-
-
 
 Config.Lang = {
     ["NeedUpdate"] = "A new update is available for this script."
