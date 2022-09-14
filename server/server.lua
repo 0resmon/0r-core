@@ -76,6 +76,18 @@ R.xPlayer = function(source)
    return rPlayer
 end
 
+R.GetByIdentifier = function(identifier)
+   if Config.Framework == "QBCore" then
+      zPlayer = QBCore.Functions.GetPlayerByCitizenId(identifier)
+      zPlayer.identifier = rPlayer.PlayerData.citizenid
+      zPlayer.source = rPlayer.PlayerData.source
+   else
+      zPlayer = ESX.GetPlayerFromIdentifier(identifier)
+   end
+   zPlayer = R.RemapPlayer(zPlayer)
+   return zPlayer
+end
+
 R.UsableItem = function(item, cb)
    if Config.Framework == "ESX" then
       return ESX.RegisterUsableItem(item, cb)
