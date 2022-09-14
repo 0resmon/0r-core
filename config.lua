@@ -2,11 +2,11 @@ Config = {}
 
 Config.Multichar = false
 
-Config.Mysql = "oxmysql"
+Config.Mysql = "oxmysql" -- ghmattimysql or mysql-async or oxmysql
 
-Config.PrimaryIdentifier = "license"
+Config.PrimaryIdentifier = "license" -- or steam -- discord -- live like
 
-Config.Framework = "QBCore"
+Config.Framework = "ESX" -- or QBCore
 
 Config.Version = {
     DB = "https://raw.githubusercontent.com/0resmon/0r-core/main/versions.json",
