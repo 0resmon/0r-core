@@ -32,7 +32,6 @@ AddEventHandler('0r-core:onPlayerJoined', function()
     TriggerClientEvent('0r-core:onPlayerJoined', source, source)
 end)
 
-
 RegisterNetEvent("0r-core:playerDropped")
 AddEventHandler('0r-core:playerDropped', function(source, reason)
     local source = source
@@ -62,6 +61,19 @@ R.PrimaryIdentifier = function(source)
    end
 end
 
+R.GetByIdentifier = function(identifier)
+   if Config.Framework == "QBCore" then
+      zPlayer = QBCore.Functions.GetPlayerByCitizenId(identifier)
+      if not zPlayer then return end
+      zPlayer.identifier = rPlayer.PlayerData.citizenid
+      zPlayer.source = rPlayer.PlayerData.source
+   else
+      zPlayer = ESX.GetPlayerFromIdentifier(identifier)
+   end
+   zPlayer = R.RemapPlayer(zPlayer)
+   return zPlayer
+end
+
 R.xPlayer = function(source)
    local source = source
    if Config.Framework == "ESX" then 
@@ -74,18 +86,6 @@ R.xPlayer = function(source)
    end
    rPlayer = R.RemapPlayer(rPlayer)
    return rPlayer
-end
-
-R.GetByIdentifier = function(identifier)
-   if Config.Framework == "QBCore" then
-      zPlayer = QBCore.Functions.GetPlayerByCitizenId(identifier)
-      zPlayer.identifier = rPlayer.PlayerData.citizenid
-      zPlayer.source = rPlayer.PlayerData.source
-   else
-      zPlayer = ESX.GetPlayerFromIdentifier(identifier)
-   end
-   zPlayer = R.RemapPlayer(zPlayer)
-   return zPlayer
 end
 
 R.UsableItem = function(item, cb)
@@ -204,6 +204,7 @@ R.RemapPlayer = function(xPlayer)
 end
 
 R.MergeTable = function(t1, t2)
+   if not t2 then return end
    for k, v in pairs(t2) do
          if (type(v) == "table") and (type(t1[k] or false) == "table") then
             R.MergeTable(t1[k], t2[k])
