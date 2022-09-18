@@ -1,7 +1,3 @@
-exports("Get0RCore", function()
-	return R
-end)
-
 RegisterNetEvent("0r-core:onPlayerJoined")
 AddEventHandler('0r-core:onPlayerJoined', function()
     local source = source
