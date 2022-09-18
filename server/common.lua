@@ -2,6 +2,10 @@ R = {}
 R.Players = {}
 R.ServerCallbacks = {}
 
+exports("Get0RCore", function()
+	return R
+end)
+
 AddEventHandler('0r-core:getSharedObject', function(cb)
 	cb(R)
 end)
