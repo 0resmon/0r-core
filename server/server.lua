@@ -65,8 +65,8 @@ R.GetByIdentifier = function(identifier)
    if Config.Framework == "QBCore" then
       zPlayer = QBCore.Functions.GetPlayerByCitizenId(identifier)
       if not zPlayer then return end
-      zPlayer.identifier = rPlayer.PlayerData.citizenid
-      zPlayer.source = rPlayer.PlayerData.source
+      zPlayer.identifier = zPlayer.PlayerData.citizenid
+      zPlayer.source = zPlayer.PlayerData.source
    else
       zPlayer = ESX.GetPlayerFromIdentifier(identifier)
    end
