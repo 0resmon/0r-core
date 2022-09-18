@@ -4,7 +4,13 @@ R.CurrentRequestId = 0
 R.ServerCallbacks = {}
 
 if Config.Framework == "ESX" then
-	ESX = exports['es_extended']:getSharedObject()
+	ESX = nil
+	Citizen.CreateThread(function()
+	   while ESX == nil do
+	      TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+	      Citizen.Wait(0)
+	   end
+	end)
 else
 	QBCore = exports['qb-core']:GetCoreObject()
 end
