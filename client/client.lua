@@ -133,6 +133,51 @@ end
 R.Notif = function(data)
 	SendNUIMessage({action = "showNotify", data = data })
 end
+
+R.GetClosestPlayer = function(coords)
+    local ped = PlayerPedId()
+    if coords then
+        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
+    else
+        coords = GetEntityCoords(ped)
+    end
+    local closestPlayers = R.GetPlayersFromCoords(coords)
+    local closestDistance = -1
+    local closestPlayer = -1
+    for i = 1, #closestPlayers, 1 do
+        if closestPlayers[i] ~= PlayerId() and closestPlayers[i] ~= -1 then
+            local pos = GetEntityCoords(GetPlayerPed(closestPlayers[i]))
+            local distance = #(pos - coords)
+
+            if closestDistance == -1 or closestDistance > distance then
+                closestPlayer = closestPlayers[i]
+                closestDistance = distance
+            end
+        end
+    end
+    return closestPlayer, closestDistance
+end
+
+R.GetPlayersFromCoords = function(coords, distance)
+    local players = GetActivePlayers()
+    local ped = PlayerPedId()
+    if coords then
+        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
+    else
+        coords = GetEntityCoords(ped)
+    end
+    distance = distance or 5
+    local closePlayers = {}
+    for _, player in pairs(players) do
+        local target = GetPlayerPed(player)
+        local targetCoords = GetEntityCoords(target)
+        local targetdistance = #(targetCoords - coords)
+        if targetdistance <= distance then
+            closePlayers[#closePlayers + 1] = player
+        end
+    end
+    return closePlayers
+end
  
 RegisterNetEvent("0r-core:notif")
 AddEventHandler("0r-core:notif", R.Notif)
