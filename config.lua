@@ -4,9 +4,13 @@ Config.Multichar = false
 
 Config.Mysql = "oxmysql" -- ghmattimysql or mysql-async or oxmysql
 
+Config.MoneyIsItem = true 
+
+Config.ItemMoneyName = "cash"
+
 Config.PrimaryIdentifier = "license" -- or steam -- discord -- live like
 
-Config.Framework = "ESX" -- or QBCore
+Config.Framework = "QBCore" -- or QBCore
 
 Config.Version = {
     DB = "https://raw.githubusercontent.com/0resmon/0r-core/main/versions.json",

@@ -114,6 +114,14 @@ R.GetIdentifier = function(source)
    end
 end
 
+R.GetPlayers = function()
+	local sources = {}
+	for k,v in pairs(R.Players) do
+		sources[#sources + 1] = k
+	end
+	return sources
+end
+
 R.RemapPlayer = function(xPlayer)
    local self = {}
    

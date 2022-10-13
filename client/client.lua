@@ -108,7 +108,7 @@ R.GetVehicles = function() -- Leave the function for compatibility
 end
 
 R.GetVehiclesInArea = function(coords, maxDistance)
-    return EnumerateEntitiesWithinDistance(ESX.Game.GetVehicles(), false, coords, maxDistance)
+    return R.EnumerateEntitiesWithinDistance(R.GetVehicles(), false, coords, maxDistance)
 end
 
 R.EnumerateEntitiesWithinDistance = function(entities, isPlayerEntities, coords, maxDistance)
