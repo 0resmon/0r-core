@@ -72,9 +72,64 @@ R.GetPlayerData = function()
 	end
 end
 
+R.GetVehicleInDirection = function()
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+    local inDirection = GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 5.0, 0.0)
+    local rayHandle = StartExpensiveSynchronousShapeTestLosProbe(playerCoords, inDirection, 10, playerPed, 0)
+    local numRayHandle, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
 
-R.Menu = function()
-	return ESX.UI.Menu
+    if hit == 1 and GetEntityType(entityHit) == 2 then
+        local entityCoords = GetEntityCoords(entityHit)
+        return entityHit, entityCoords
+    end
+
+    return nil
+end
+
+R.GetPlayerMoney = function(cash)
+    if Config.Framework == "ESX" then
+        if cash == "cash" then
+            return ESX.GetPlayerData().accounts.money
+        else
+            return ESX.GetPlayerData().accounts.bank
+        end
+    else
+        if cash == "cash" then
+            return QBCore.Functions.GetPlayerData().money["cash"]
+        else
+            return QBCore.Functions.GetPlayerData().money["bank"]
+        end
+    end
+end
+
+R.GetVehicles = function() -- Leave the function for compatibility
+    return GetGamePool('CVehicle')
+end
+
+R.GetVehiclesInArea = function(coords, maxDistance)
+    return EnumerateEntitiesWithinDistance(ESX.Game.GetVehicles(), false, coords, maxDistance)
+end
+
+R.EnumerateEntitiesWithinDistance = function(entities, isPlayerEntities, coords, maxDistance)
+    local nearbyEntities = {}
+
+    if coords then
+        coords = vector3(coords.x, coords.y, coords.z)
+    else
+        local playerPed = ESX.PlayerData.ped
+        coords = GetEntityCoords(playerPed)
+    end
+
+    for k, entity in pairs(entities) do
+        local distance = #(coords - GetEntityCoords(entity))
+
+        if distance <= maxDistance then
+            nearbyEntities[#nearbyEntities + 1] = isPlayerEntities and k or entity
+        end
+    end
+
+    return nearbyEntities
 end
 
 R.DrawText3D = function(x,y,z, text)
