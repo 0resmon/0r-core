@@ -25,7 +25,7 @@ Config.events = {
     },
     playerLoaded = {
         ["ESX"] = "esx:playerLoaded",
-        ["QBCore"] = "QBCore:Client:OnJobUpdate",
+        ["QBCore"] = "QBCore:Client:OnPlayerLoaded",
     },  
 }
 
