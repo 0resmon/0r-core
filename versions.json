@@ -7,5 +7,10 @@
     {
         "script":"kibra-mechanics",
         "version":"1.0.3"
+    },
+    
+    {
+        "script":"kibra-motelsv2",
+        "version":"1.1.6"
     }
 ]
