@@ -22,5 +22,10 @@
      {
         "script":"0r_motels",
         "version":"1.0.5"
-    }
+    },
+
+    {
+        "script":"res-audio",
+        "version":"1.0.1"
+    },
 ]
