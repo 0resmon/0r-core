@@ -1,3 +1,4 @@
+
 RegisterNetEvent("0r-core:onPlayerJoined")
 AddEventHandler('0r-core:onPlayerJoined', function()
     local source = source
@@ -205,6 +206,36 @@ R.RemapPlayer = function(xPlayer)
    end
 
    return R.MergeTable(self, xPlayer)
+end
+
+R.DumpTable = function(table, nb)
+	if nb == nil then
+		nb = 0
+	end
+	if type(table) == 'table' then
+		local s = ''
+		for i = 1, nb + 1, 1 do
+			s = s .. "    "
+		end
+		s = '{\n'
+		for k,v in pairs(table) do
+			if type(k) ~= 'number' then k = '"'..k..'"' end
+			for i = 1, nb, 1 do
+				s = s .. "    "
+			end
+			s = s .. '['..k..'] = ' .. R.DumpTable(v, nb + 1) .. ',\n'
+		end
+		for i = 1, nb, 1 do
+			s = s .. "    "
+		end
+		return s .. '}'
+	else
+		return tostring(table)
+	end
+end
+
+R.GetFramework = function()
+   return Config.Framework
 end
 
 R.MergeTable = function(t1, t2)

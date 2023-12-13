@@ -3,33 +3,36 @@ R.PlayerData = {}
 R.CurrentRequestId = 0
 R.ServerCallbacks = {}
 
-if Config.Framework == "ESX" then
-	ESX = nil
-	Citizen.CreateThread(function()
-	   while ESX == nil do
-	      TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-	      Citizen.Wait(0)
-	   end
-	end)
-else
-	QBCore = exports['qb-core']:GetCoreObject()
+if GetResourceState(Config.CoreName["ESX"]) ~= 'missing' then
+    Config.Framework = 'ESX'
+    ESX = exports[Config.CoreName["ESX"]].getSharedObject()
+    if Config.OldFramework then
+        ESX = nil
+        Citizen.CreateThread(function()
+            while ESX == nil do
+                TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+                Citizen.Wait(0)
+            end
+        end)
+    end
+end
+
+exports("Get0RCore", function()
+	return R
+end)
+
+if GetResourceState(Config.CoreName["QBCore"]) ~= 'missing' then
+    Config.Framework = 'QBCore'
+    QBCore = exports[Config.CoreName['QBCore']]:GetCoreObject()
 end
 
 AddEventHandler('0r-core:getSharedObject', function(cb)
 	cb(R)
 end)
 
-exports("Get0RCore", function()
-	return R
-end)
-
 exports("GetFramework", function()
 	return Config.Framework
 end)
-
-function getSharedObject()
-	return R
-end
 
 RegisterNetEvent('qb-spawn:client:openUI', function()
 	TriggerServerEvent('0r-core:onPlayerJoined')
@@ -65,11 +68,14 @@ AddEventHandler('0r-core:serverCallback', function(requestId, ...)
 end)
 
 R.GetPlayerData = function()
+    local pData = {}
 	if Config.Framework == "ESX" then
-		return ESX.GetPlayerData()
+		pData = ESX.GetPlayerData()
 	else
-		return QBCore.Functions.GetPlayerData()
+		pData = QBCore.Functions.GetPlayerData()
+        pData.identifier = pData.citizenid
 	end
+    return pData
 end
 
 R.GetVehicleInDirection = function()
@@ -87,20 +93,23 @@ R.GetVehicleInDirection = function()
     return nil
 end
 
-R.GetPlayerMoney = function(cash)
-    if Config.Framework == "ESX" then
-        if cash == "cash" then
-            return ESX.GetPlayerData().accounts.money
-        else
-            return ESX.GetPlayerData().accounts.bank
+R.GetPlayerMoney = function(type)
+    local Money = 0
+    if Config.Framework == 'ESX' then
+        if type == 'cash' then type = 'money' end
+        local PlayerData = ESX.GetPlayerData()
+        print(ESX.DumpTable(PlayerData.accounts))
+        for k,v in pairs(PlayerData.accounts) do
+            if v.name == type then
+                Money = v.money
+            end
         end
     else
-        if cash == "cash" then
-            return QBCore.Functions.GetPlayerData().money["cash"]
-        else
-            return QBCore.Functions.GetPlayerData().money["bank"]
-        end
+        local PlayerData = QBCore.Functions.GetPlayerData()
+        Money = PlayerData.money[type]
     end
+
+    return Money
 end
 
 R.GetVehicles = function() -- Leave the function for compatibility
@@ -184,9 +193,16 @@ R.NotifPos = function(pos)
 	SendNUIMessage({ action = "showNotify", data = { type = "setDefaultPos", pos = pos }  })
 end
 
-
 R.Notif = function(data)
 	SendNUIMessage({action = "showNotify", data = data })
+end
+
+R.Notification = function(notifyType, length, message)
+    if Config.Framework == 'ESX' then
+        ESX.ShowNotification(notifyType, length, message)
+    else
+        QBCore.Functions.Notify(message, notifyType, length)
+    end
 end
 
 R.GetClosestPlayer = function(coords)
@@ -232,6 +248,48 @@ R.GetPlayersFromCoords = function(coords, distance)
         end
     end
     return closePlayers
+end
+
+R.DumpTable = function(table, nb)
+	if nb == nil then
+		nb = 0
+	end
+	if type(table) == 'table' then
+		local s = ''
+		for i = 1, nb + 1, 1 do
+			s = s .. "    "
+		end
+		s = '{\n'
+		for k,v in pairs(table) do
+			if type(k) ~= 'number' then k = '"'..k..'"' end
+			for i = 1, nb, 1 do
+				s = s .. "    "
+			end
+			s = s .. '['..k..'] = ' .. R.DumpTable(v, nb + 1) .. ',\n'
+		end
+		for i = 1, nb, 1 do
+			s = s .. "    "
+		end
+		return s .. '}'
+	else
+		return tostring(table)
+	end
+end
+
+function R.GetPlate(vehicle)
+    if vehicle == 0 then return end
+    return R.Trim(GetVehicleNumberPlateText(vehicle))
+end
+
+function R.Trim(value)
+    if not value then return nil end
+    return (string.gsub(value, '^%s*(.-)%s*$', '%1'))
+end
+
+function R.Round(value, numDecimalPlaces)
+    if not numDecimalPlaces then return math.floor(value + 0.5) end
+    local power = 10 ^ numDecimalPlaces
+    return math.floor((value * power) + 0.5) / (power)
 end
 
 R.GetVehicleProperties = function(vehicle)
@@ -289,14 +347,14 @@ R.GetVehicleProperties = function(vehicle)
 
         return {
             model = GetEntityModel(vehicle),
-            plate = QBCore.Functions.GetPlate(vehicle),
+            plate = R.GetPlate(vehicle),
             plateIndex = GetVehicleNumberPlateTextIndex(vehicle),
-            bodyHealth = QBCore.Shared.Round(GetVehicleBodyHealth(vehicle), 0.1),
-            engineHealth = QBCore.Shared.Round(GetVehicleEngineHealth(vehicle), 0.1),
-            tankHealth = QBCore.Shared.Round(GetVehiclePetrolTankHealth(vehicle), 0.1),
-            fuelLevel = QBCore.Shared.Round(GetVehicleFuelLevel(vehicle), 0.1),
-            dirtLevel = QBCore.Shared.Round(GetVehicleDirtLevel(vehicle), 0.1),
-            oilLevel = QBCore.Shared.Round(GetVehicleOilLevel(vehicle), 0.1),
+            bodyHealth = R.Round(GetVehicleBodyHealth(vehicle), 0.1),
+            engineHealth = R.Round(GetVehicleEngineHealth(vehicle), 0.1),
+            tankHealth = R.Round(GetVehiclePetrolTankHealth(vehicle), 0.1),
+            fuelLevel = R.Round(GetVehicleFuelLevel(vehicle), 0.1),
+            dirtLevel = R.Round(GetVehicleDirtLevel(vehicle), 0.1),
+            oilLevel = R.Round(GetVehicleOilLevel(vehicle), 0.1),
             color1 = colorPrimary,
             color2 = colorSecondary,
             pearlescentColor = pearlescentColor,

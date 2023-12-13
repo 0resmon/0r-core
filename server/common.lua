@@ -6,19 +6,14 @@ exports("Get0RCore", function()
 	return R
 end)
 
-AddEventHandler('0r-core:getSharedObject', function(cb)
-	cb(R)
-end)
-
-function getSharedObject()
-	return R
+if GetResourceState(Config.CoreName["ESX"]) ~= 'missing' then
+    Config.Framework = 'ESX'
+    ESX = exports[Config.CoreName["ESX"]].getSharedObject()
 end
 
-if Config.Framework == "ESX" then 
-   ESX = nil
-   TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-elseif Config.Framework == "QBCore" then 
-   QBCore = exports['qb-core']:GetCoreObject()
+if GetResourceState(Config.CoreName["QBCore"]) ~= 'missing' then
+    Config.Framework = 'QBCore'
+    QBCore = exports[Config.CoreName['QBCore']]:GetCoreObject()
 end
 
 R.ExecuteSql = function(query)
