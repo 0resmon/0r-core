@@ -50,17 +50,6 @@ AddEventHandler("0r-core:setPlayerData", function(PlayerData)
     R.PlayerData = PlayerData
 end)
 
-RegisterNetEvent(Config.events["playerLoaded"][Config.Framework])
-AddEventHandler(Config.events["playerLoaded"][Config.Framework], function()
-   TriggerServerEvent('0r-core:onPlayerJoined')
-end)
-
-RegisterNetEvent(Config.events["updateJob"][Config.Framework])
-AddEventHandler(Config.events["updateJob"][Config.Framework], function(job)
-    R.PlayerData.job = job
-    TriggerServerEvent("0r-core:setJob", job)
-end)
-
 RegisterNetEvent('0r-core:serverCallback')
 AddEventHandler('0r-core:serverCallback', function(requestId, ...)
 	R.ServerCallbacks[requestId](...)
@@ -74,6 +63,8 @@ R.GetPlayerData = function()
 	else
 		pData = QBCore.Functions.GetPlayerData()
         pData.identifier = pData.citizenid
+        pData.job.grade_name = pData.job.grade.name
+        pData.job.grade = pData.job.grade.level
 	end
     return pData
 end

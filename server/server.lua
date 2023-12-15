@@ -75,11 +75,16 @@ R.xPlayer = function(source)
    local source = source
    if Config.Framework == "ESX" then 
       rPlayer = ESX.GetPlayerFromId(source)
+      rPlayer.job_grade_level = rPlayer.job.grade
    elseif Config.Framework == "QBCore" then 
       rPlayer = QBCore.Functions.GetPlayer(source)
       if not rPlayer then return end
       rPlayer.identifier = rPlayer.PlayerData.citizenid
+      rPlayer.job_grade_level = rPlayer.PlayerData.job.grade.level
       rPlayer.source = rPlayer.PlayerData.source
+      rPlayer.job_grade_name = rPlayer.PlayerData.job.grade.name
+      rPlayer.job = rPlayer.PlayerData.job.name 
+      rPlayer.name = rPlayer.PlayerData.charinfo.firstname..' '..rPlayer.PlayerData.charinfo.lastname
    end
    rPlayer = R.RemapPlayer(rPlayer)
    return rPlayer
@@ -121,6 +126,14 @@ R.GetPlayers = function()
 		sources[#sources + 1] = k
 	end
 	return sources
+end
+
+R.GetAllPlayers = function()
+	if Config.Framework == 'ESX' then
+      return ESX.GetExtendedPlayers()
+   else
+      return QBCore.Functions.GetPlayers()
+   end
 end
 
 R.RemapPlayer = function(xPlayer)
