@@ -86,6 +86,7 @@ R.xPlayer = function(source)
       rPlayer.job = rPlayer.PlayerData.job.name 
       rPlayer.name = rPlayer.PlayerData.charinfo.firstname..' '..rPlayer.PlayerData.charinfo.lastname
    end
+
    rPlayer = R.RemapPlayer(rPlayer)
    return rPlayer
 end
@@ -130,7 +131,7 @@ end
 
 R.GetAllPlayers = function()
 	if Config.Framework == 'ESX' then
-      return ESX.GetExtendedPlayers()
+      return ESX.GetPlayers()
    else
       return QBCore.Functions.GetPlayers()
    end
