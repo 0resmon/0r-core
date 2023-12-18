@@ -6,6 +6,7 @@ AddEventHandler('0r-core:onPlayerJoined', function()
     if not R.Players[source] then 
        info = {}
        identifier = R.GetIdentifier(source)
+       if not identifier then return end
        query = "SELECT * FROM `users` WHERE identifier = '"..identifier.."' "
        if Config.Framework == "QBCore" then 
           query = ""
@@ -75,6 +76,7 @@ R.xPlayer = function(source)
    local source = source
    if Config.Framework == "ESX" then 
       rPlayer = ESX.GetPlayerFromId(source)
+      if not rPlayer then return end
       rPlayer.job_grade_level = rPlayer.job.grade
    elseif Config.Framework == "QBCore" then 
       rPlayer = QBCore.Functions.GetPlayer(source)
@@ -113,7 +115,9 @@ end
 
 R.GetIdentifier = function(source)
    if Config.Framework == "ESX" then 
-      return ESX.GetPlayerFromId(source).identifier
+      local player = ESX.GetPlayerFromId(source)
+      if not player then return end
+      return player.identifier
    elseif Config.Framework == "QBCore" then 
       return QBCore.Functions.GetPlayer(source).PlayerData.citizenid
    else 
