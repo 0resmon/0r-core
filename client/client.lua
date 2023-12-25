@@ -68,7 +68,6 @@ R.GetPlayerData = function()
     local pData = {}
 	if Config.Framework == "ESX" then
 		pData = ESX.GetPlayerData()
-        pData.job.grade.level = pData.job.grade
 	else
 		pData = QBCore.Functions.GetPlayerData()
         pData.identifier = pData.citizenid 
