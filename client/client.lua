@@ -56,15 +56,23 @@ AddEventHandler('0r-core:serverCallback', function(requestId, ...)
 	R.ServerCallbacks[requestId] = nil
 end)
 
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    R.PlayerData.job = JobInfo
+end)
+
+RegisterNetEvent('esx:setJob', function(JobInfo)
+    R.PlayerData.job = JobInfo
+end)
+
 R.GetPlayerData = function()
     local pData = {}
 	if Config.Framework == "ESX" then
 		pData = ESX.GetPlayerData()
+        pData.job.grade.level = pData.job.grade
 	else
 		pData = QBCore.Functions.GetPlayerData()
-        pData.identifier = pData.citizenid
+        pData.identifier = pData.citizenid 
         pData.job.grade_name = pData.job.grade.name
-        pData.job.grade = pData.job.grade.level
 	end
     return pData
 end
@@ -89,7 +97,6 @@ R.GetPlayerMoney = function(type)
     if Config.Framework == 'ESX' then
         if type == 'cash' then type = 'money' end
         local PlayerData = ESX.GetPlayerData()
-        print(ESX.DumpTable(PlayerData.accounts))
         for k,v in pairs(PlayerData.accounts) do
             if v.name == type then
                 Money = v.money
