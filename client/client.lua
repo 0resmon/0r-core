@@ -71,7 +71,6 @@ R.GetPlayerData = function()
 	else
 		pData = QBCore.Functions.GetPlayerData()
         pData.identifier = pData.citizenid 
-        pData.job.grade_name = pData.job.grade.name
 	end
     return pData
 end
