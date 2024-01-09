@@ -201,6 +201,8 @@ R.Notification = function(notifyType, length, message)
     end
 end
 
+RegisterNetEvent('0R:Core:Notify', R.Notification)
+
 R.GetClosestPlayer = function(coords)
     local ped = PlayerPedId()
     if coords then
