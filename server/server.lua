@@ -72,6 +72,22 @@ R.GetByIdentifier = function(identifier)
    return zPlayer
 end
 
+R.GetByIdentifierV2 = function(identifier)
+   local zPlayer = {}
+
+   if Config.Framework == "QBCore" then
+      zPlayer = QBCore.Functions.GetPlayerByCitizenId(identifier)
+      if not zPlayer then return end
+      zPlayer.identifier = zPlayer.PlayerData.citizenid
+      zPlayer.source = zPlayer.PlayerData.source
+   else
+      zPlayer = ESX.GetPlayerFromIdentifier(identifier).source
+   end
+
+   zPlayer = R.RemapPlayer(zPlayer)
+   return zPlayer
+end
+
 R.xPlayer = function(source)
    local source = source
    if Config.Framework == "ESX" then 
@@ -255,6 +271,22 @@ end
 
 R.GetFramework = function()
    return Config.Framework
+end
+
+R.CheckPerm = function(source, perm)
+   local auth = false
+   if Config.Framework == 'QBCore' then
+      if QBCore.Functions.HasPermission(source, perm) then
+         auth = true
+      end
+   else
+      local xPlayer = ESX.GetPlayerFromId(source)
+      if xPlayer.getGroup() == perm then
+         auth = true
+      end
+   end
+
+   return auth
 end
 
 R.MergeTable = function(t1, t2)
