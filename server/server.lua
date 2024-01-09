@@ -78,6 +78,7 @@ R.xPlayer = function(source)
       rPlayer = ESX.GetPlayerFromId(source)
       if not rPlayer then return end
       rPlayer.job_grade_level = rPlayer.job.grade
+      rPlayer.name = rPlayer.getName()
    elseif Config.Framework == "QBCore" then 
       rPlayer = QBCore.Functions.GetPlayer(source)
       if not rPlayer then return end
