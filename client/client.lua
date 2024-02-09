@@ -193,11 +193,12 @@ R.Notif = function(data)
 	SendNUIMessage({action = "showNotify", data = data })
 end
 
-R.Notification = function(notifyType, length, message)
+R.Notification = function(NotifyType, Message, Length)
+    if not Length then Length = 3000 end
     if Config.Framework == 'ESX' then
-        ESX.ShowNotification(notifyType, length, message)
+        ESX.ShowNotification(NotifyType, Length, Message)
     else
-        QBCore.Functions.Notify(message, notifyType, length)
+        QBCore.Functions.Notify(Message, NotifyType, Length)
     end
 end
 
