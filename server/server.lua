@@ -188,6 +188,14 @@ R.RemapPlayer = function(xPlayer)
       end
    end
 
+   self.RemoveItem = function(item, amount, slot, metadata)
+      if Config.Framework == "ESX" then 
+         return xPlayer.removeInventoryItem(item, amount, slot, metadata)
+      else 
+         return xPlayer.Functions.RemoveItem(item, amount, slot, metadata)
+      end
+   end
+
    self.GiveAccountMoney = function(account, money)
       if Config.Framework == "ESX" then 
          if account == "cash" then account = "money" end
