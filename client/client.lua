@@ -68,8 +68,11 @@ R.GetPlayerData = function()
     local pData = {}
 	if Config.Framework == "ESX" then
 		pData = ESX.GetPlayerData()
+        print(R.DumpTable(pData.job))
+        pData.job.grade.level = pData.job.grade
 	else
 		pData = QBCore.Functions.GetPlayerData()
+        print(R.DumpTable(pData.job))
         pData.identifier = pData.citizenid 
 	end
     return pData
@@ -289,6 +292,20 @@ function R.Round(value, numDecimalPlaces)
     if not numDecimalPlaces then return math.floor(value + 0.5) end
     local power = 10 ^ numDecimalPlaces
     return math.floor((value * power) + 0.5) / (power)
+end
+
+function R.LoadModel(model)
+    RequestModel(GetHashKey(model))
+    while (not HasModelLoaded(GetHashKey(model))) do
+        Wait(1)
+    end
+end
+
+function R.LoadAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        RequestAnimDict(dict)
+        Wait(1)
+    end
 end
 
 R.GetVehicleProperties = function(vehicle)
