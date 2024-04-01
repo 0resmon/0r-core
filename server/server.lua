@@ -235,7 +235,9 @@ R.RemapPlayer = function(xPlayer)
           return xPlayer.getInventoryItem(item)
       else 
          x = xPlayer.Functions.GetItemByName(item)
-         x.count = x.amount
+         if x ~= nil then
+            x.count = x.amount
+         end
          return x
       end  
    end
