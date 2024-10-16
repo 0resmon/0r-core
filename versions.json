@@ -30,6 +30,11 @@
     },
 
     {
+        "script": "kibra-dispatch",
+        "version": "1.0.0"
+    },
+
+    {
         "script":"s4-house",
         "version":"1.0.6"
     },
