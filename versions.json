@@ -52,5 +52,10 @@
     {
         "script":"kibra-smartpad",
         "version":"1.0.5"
+    },
+
+     {
+        "script":"0r-dispatch",
+        "version":"1.0.0"
     }
 ]
