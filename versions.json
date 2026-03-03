@@ -35,18 +35,13 @@
     },
 
     {
-        "script": "0r-dispatch",
-        "version": "1.0.0"
-    },
-
-    {
         "script":"s4-house",
         "version":"1.0.6"
     },
 
      {
         "script":"0r_houses",
-        "version":"1.3.3"
+        "version":"1.3.4"
     },
 
     {
